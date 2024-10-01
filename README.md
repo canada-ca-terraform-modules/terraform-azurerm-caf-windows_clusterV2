@@ -14,17 +14,14 @@ No requirements.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_windows_VMs"></a> [windows\_VMs](#module\_windows\_VMs) | github.com/canada-ca-terraform-modules/terraform-azurerm-caf-windows_virtual_machineV2.git | v1.0.1 |
+| <a name="module_load_balancer"></a> [load\_balancer](#module\_load\_balancer) | github.com/canada-ca-terraform-modules/terraform-azurerm-caf-load_balancer.git | n/a |
+| <a name="module_windows_VMs"></a> [windows\_VMs](#module\_windows\_VMs) | github.com/canada-ca-terraform-modules/terraform-azurerm-caf-windows_virtual_machineV2.git | n/a |
 
 ## Resources
 
 | Name | Type |
 |------|------|
 | [azurerm_availability_set.availability_set](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/availability_set) | resource |
-| [azurerm_lb.loadbalancer](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb) | resource |
-| [azurerm_lb_backend_address_pool.loadbalancer-lbbp](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_backend_address_pool) | resource |
-| [azurerm_lb_probe.loadbalancer-lbhp](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_probe) | resource |
-| [azurerm_lb_rule.loadbalancer-lbr](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/lb_rule) | resource |
 | [azurerm_network_interface_backend_address_pool_association.LB_VMs](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/resources/network_interface_backend_address_pool_association) | resource |
 
 ## Inputs
