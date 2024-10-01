@@ -8,8 +8,8 @@ windows_vms_clusterV2 = {
                     postfix        = "01"
                     resource_group = "Project"
                     admin_username = "azureadmin"
-                    # admin_password          = "Canada123!"                          # Optional: Only set the password if a generated password cannot be created. See README for details
-                    # password_overwrite = true                                       # Optional: Set this to true if you absolutely want to set the admin password above
+                    #admin_password          = "Canada123!"                          # Optional: Only set the password if a generated password cannot be created. See README for details
+                    password_overwrite = false                                       # Optional: Set this to true if you absolutely want to set the admin password above
                     vm_size = "Standard_D2s_v5"
 
                     backup_policy = "daily1" # Optional: Set this value to configure backup policy on the VM. Can be either userDefinedString portion of the policy name or ID. Defaults to daily1 
@@ -52,9 +52,9 @@ windows_vms_clusterV2 = {
                     # At least one nic is required. If more than one is present, the first nic in the list will be the primary one.
                     nic = {
                     nic1 = {
-                        subnet                        = "APP"
+                        subnet                        = "MAZ"
                         private_ip_address_allocation = "Static"
-                        private_ip_address            = "172.17.65.8"
+                        private_ip_address            = "172.17.64.102"
 
                         # dns_servers                    = []
                         # edge_zone                      = ""
@@ -214,7 +214,8 @@ windows_vms_clusterV2 = {
                 # azurerm_lb section
                 #
                 # edge_zone = "" # (Optional) Specifies the Edge Zone within the Azure Region where this Load Balancer should exist. Changing this forces a new Load Balancer to be created.
-
+            postfix = "01"
+            resource_group_name ="Project"
                 frontend_ip_configuration = {
                     feipc1 = {
                     subnet                                             = "MAZ"         # (Required) The name or the resource id of the Subnet which should be used for this IP Configuration
