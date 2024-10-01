@@ -1,5 +1,5 @@
 module "windows_VMs" {
-  source = "github.com/canada-ca-terraform-modules/terraform-azurerm-caf-windows_virtual_machineV2.git?ref=v1.0.1"
+  source = "github.com/canada-ca-terraform-modules/terraform-azurerm-caf-windows_virtual_machineV2.git"
   for_each = var.windows_vms_cluster.windows_VMs
 
   location= var.location
@@ -19,5 +19,5 @@ resource "azurerm_network_interface_backend_address_pool_association" "LB_VMs" {
 
   network_interface_id    =  module.windows_VMs[each.key].windows_vm_object.network_interface_ids[0]
   ip_configuration_name   =  "${module.windows_VMs[each.key].windows_vm_object.name}-ipconfig1"
-  backend_address_pool_id = azurerm_lb_backend_address_pool.loadbalancer-lbbp[0].id
+  backend_address_pool_id = module.load_balancer[0].loadbalancer_backend_address_pool.id
 }

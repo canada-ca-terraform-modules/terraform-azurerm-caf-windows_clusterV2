@@ -7,7 +7,7 @@ variable "windows_vms_clusterV2" {
 module "windows_VMs_clusterV2" {
 
     for_each = var.windows_vms_clusterV2
-    source = "github.com/canada-ca-terraform-modules/terraform-azurerm-caf-vmss-windowsV2.git"
+    source = "github.com/canada-ca-terraform-modules/terraform-azurerm-caf-windows_clusterV2.git"
     location= var.location
     env = var.env
     group = var.group

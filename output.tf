@@ -10,5 +10,5 @@ output "availability_set" {
 
 output "loaddbalancer" {
   description = "The availability_set object"
-  value       = azurerm_lb.loadbalancer
+  value       = module.load_balancer
 }
