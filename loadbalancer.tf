@@ -1,6 +1,6 @@
 module "load_balancer" {
-  count = try(var.windows_vms_cluster.lb, null) != null ? 1 : 0
-  source   = "github.com/canada-ca-terraform-modules/terraform-azurerm-caf-load_balancer.git"
+  count  = try(var.windows_vms_cluster.lb, null) != null ? 1 : 0
+  source = "github.com/canada-ca-terraform-modules/terraform-azurerm-caf-load_balancer.git?ref=v2.0.0"
 
   location          = var.location
   subnets           = var.subnets
@@ -8,9 +8,8 @@ module "load_balancer" {
   userDefinedString = var.userDefinedString
   tags              = var.tags
   env               = var.env
-  group             = var.group
-  project           = var.project
-  load_balancer      = var.windows_vms_cluster.lb
-  custom_data       = try(var.windows_vms_cluster.lb.custom_data, false) != false ? base64encode(file("${path.cwd}/${var.windows_vms_cluster.lb.custom_data}")) : null
-  user_data         = try(var.windows_vms_cluster.lb.user_data, false) != false ? base64encode(file("${path.cwd}/${var.windows_vms_cluster.lb.user_data}")) : null
+  load_balancer     = var.windows_vms_cluster.lb
+  # NOTE: group, project, custom_data, user_data were removed as unsupported
+  # arguments in load_balancer v2.0.0 (dead pass-through, never consumed by
+  # that module) - do not re-add.
 }

@@ -2,20 +2,23 @@
 <!-- BEGIN_TF_DOCS -->
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.9 |
+| <a name="requirement_azurerm"></a> [azurerm](#requirement\_azurerm) | ~> 5.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | n/a |
+| <a name="provider_azurerm"></a> [azurerm](#provider\_azurerm) | 5.0.1 |
 
 ## Modules
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_load_balancer"></a> [load\_balancer](#module\_load\_balancer) | github.com/canada-ca-terraform-modules/terraform-azurerm-caf-load_balancer.git | n/a |
-| <a name="module_windows_VMs"></a> [windows\_VMs](#module\_windows\_VMs) | github.com/canada-ca-terraform-modules/terraform-azurerm-caf-windows_virtual_machineV2.git | n/a |
+| <a name="module_load_balancer"></a> [load\_balancer](#module\_load\_balancer) | github.com/canada-ca-terraform-modules/terraform-azurerm-caf-load_balancer.git | v2.0.0 |
+| <a name="module_windows_VMs"></a> [windows\_VMs](#module\_windows\_VMs) | github.com/canada-ca-terraform-modules/terraform-azurerm-caf-windows_virtual_machineV2.git | v1.2.0 |
 
 ## Resources
 
