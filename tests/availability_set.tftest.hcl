@@ -173,6 +173,45 @@ run "custom_name_override" {
   }
 }
 
+run "null_name_override_falls_back_to_generated_name" {
+  command = plan
+  variables {
+    windows_vms_cluster = {
+      resource_group = "Project"
+      as = {
+        name = null
+      }
+      windows_VMs = {
+        test = {
+          serverType     = "SWJ"
+          resource_group = "Project"
+          admin_username = "azureadmin"
+          admin_password = "TestP@ss123!"
+          vm_size        = "Standard_D2s_v5"
+          jump_server    = true
+          disable_backup = true
+          nic = {
+            nic1 = {
+              subnet                        = "OZ"
+              private_ip_address_allocation = "Dynamic"
+            }
+          }
+          storage_image_reference = {
+            publisher = "MicrosoftWindowsServer"
+            offer     = "WindowsServer"
+            sku       = "2022-datacenter-g2"
+            version   = "latest"
+          }
+        }
+      }
+    }
+  }
+  assert {
+    condition     = azurerm_availability_set.availability_set.name == "Dev1SWJ-test-as"
+    error_message = "as.name = null must fall back to the generated name formula"
+  }
+}
+
 run "resource_group_by_name" {
   command = plan
   variables {

@@ -1,5 +1,5 @@
 resource "azurerm_availability_set" "availability_set" {
-  name                = try(var.windows_vms_cluster.as.name, local.as-name) # override: as.name = "existing-prod-as"
+  name                = coalesce(try(var.windows_vms_cluster.as.name, null), local.as-name) # override: as.name = "existing-prod-as"
   location            = var.location
   resource_group_name = local.resource_group_name
 

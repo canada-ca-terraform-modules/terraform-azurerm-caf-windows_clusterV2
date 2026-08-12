@@ -1,7 +1,8 @@
 # tests/upgrade_compat.tftest.hcl
-# State-chaining test: apply a pre-upgrade-shaped config (no as.name override,
-# no lb), then plan the upgraded module against that state and confirm no
-# resource address changes, replacements, or unexpected destroys.
+# State-chaining regression test for this branch's own naming behavior: apply a
+# config without as.name/lb, then plan the same branch against that state to
+# confirm the generated availability set name remains stable when the new
+# as.name override is omitted or set to the already-generated value.
 
 mock_provider "azurerm" {}
 mock_provider "http" {}
@@ -101,7 +102,7 @@ run "baseline_apply" {
   }
 }
 
-run "upgrade_plan_no_replacement" {
+run "state_chained_plan_without_name_override" {
   command = plan
   variables {
     windows_vms_cluster = {
@@ -138,11 +139,11 @@ run "upgrade_plan_no_replacement" {
   }
   assert {
     condition     = azurerm_availability_set.availability_set.name == "Dev1SWJ-test-as"
-    error_message = "Availability set name must be unchanged after upgrade (no destroy/recreate)"
+    error_message = "Availability set name must remain stable across a state-chained plan when as.name is omitted"
   }
 }
 
-run "upgrade_plan_with_name_override_no_replacement" {
+run "state_chained_plan_with_matching_name_override" {
   command = plan
   variables {
     windows_vms_cluster = {
@@ -180,6 +181,6 @@ run "upgrade_plan_with_name_override_no_replacement" {
   }
   assert {
     condition     = azurerm_availability_set.availability_set.name == "Dev1SWJ-test-as"
-    error_message = "Newly-added as.name override key must not force a replacement when left unset"
+    error_message = "A matching as.name override must preserve the generated availability set name across a state-chained plan"
   }
 }

@@ -4,14 +4,14 @@ All notable changes to this module are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
-## [1.1.0] - 2026-08-12
+## [2.0.0] - 2026-08-12
 
 ### Changed
 
 - Upgraded `azurerm` provider requirement to `~> 5.0` (pinned/tested against `5.0.1`, the target version requested for this upgrade). Created `providers.tf` — none existed before.
 - Pinned the previously-unpinned `load_balancer` child module ref to `v2.0.0` (was floating on the default branch).
 - Pinned the previously-unpinned `windows_VMs` (`terraform-azurerm-caf-windows_virtual_machineV2`) child module ref to `v1.2.0` (was floating on the default branch).
-- Bumped the self-referential `ESLZ/SRV-windows-cluster.tf` module source ref from unpinned to `v1.1.0`.
+- Bumped the self-referential `ESLZ/SRV-windows-cluster.tf` module source ref from unpinned to `v2.0.0`.
 - Bumped GitHub Actions pins: `actions/checkout` v4.1.7 → v7.0.1, `terraform-docs/gh-actions` v1.2.0 → v1.4.1 (in `documentation.yml`); added pinned `hashicorp/setup-terraform` v4.0.1 and `terraform-linters/setup-tflint` v6.3.0 (`tflint_version: v0.64.0`) in the new `terraform-ci.yml`.
 
 ### Fixed
@@ -33,6 +33,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
 ### Notes
 
+- This is a major release because it raises the minimum supported stack to Terraform `>= 1.9` and `azurerm ~> 5.0`; consumers pinned to older Terraform or `azurerm` 4.x must upgrade before adopting `v2.0.0`.
 - `azurerm_availability_set` and `azurerm_network_interface_backend_address_pool_association` (the only two resources owned directly by this module) have zero breaking schema changes between `azurerm` `~> 4.0` and `5.0.1` per the [azurerm 5.0 upgrade guide](https://registry.terraform.io/providers/hashicorp/azurerm/latest/docs/guides/5.0-upgrade-guide) — this upgrade is otherwise pure housekeeping plus the child-module-pin compatibility fix above.
 - Existing `ESLZ/SRV-windows-cluster.tfvars` requires no changes — full backward compatibility preserved. The `lb.tunnel_interface` (singular) key was already used correctly in the example tfvars, matching the `load_balancer` v2.0.0 schema.
 
