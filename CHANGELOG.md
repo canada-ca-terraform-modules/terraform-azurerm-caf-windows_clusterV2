@@ -26,6 +26,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 - `tests/availability_set.tftest.hcl`, `tests/network_interface_backend_address_pool_association.tftest.hcl`, and `tests/upgrade_compat.tftest.hcl` (no prior test coverage existed).
 - `sensitive = true` on all three module outputs (`VMs`, `availability_set`, `loaddbalancer`), since each exposes a full resource/module object.
 - Optional name override for the availability set: `as.name` (falls back to the existing generated name formula when omitted).
+- `ESLZ/SRV-windows-cluster.tfvars`: documented the optional name-override arguments introduced upstream by the newly-pinned child module versions, none of which were previously documented in this module's own examples even though both child modules already supported them:
+  - `windows_virtual_machineV2` (v1.1.0+): `vm_name`, `nsg_name`, `kv_secret_name`, `os_disk.name`, `data_disks.<key>.name`, `nic.<key>.name`, `nic.<key>.ip_configuration_name`.
+  - `load_balancer` (v2.0.0): `lb.frontend_ip_configuration.<key>.name`, `lb.backend_address_pool_name`, `lb.probes.<key>.name`, `lb.rules.<key>.name`.
+  - Added `tests/child_module_name_overrides.tftest.hcl` asserting each of the above passes through this module's wiring to the corresponding child module output.
 
 ### Removed
 

@@ -24,6 +24,10 @@ windows_vms_clusterV2 = {
         # use_nic_nsg                                            = true
         # allow_extension_operations                             = true
         # availability_set_id                                    = ""
+        # New in windows_virtual_machineV2 v1.1.0: optional name overrides for existing deployments whose real names diverge from the generated formula
+        # vm_name        = "existing-prod-vm"    # Optional: Override the generated VM resource name
+        # nsg_name       = "existing-prod-vm-nsg" # Optional: Override the generated NSG resource name (only used when use_nic_nsg = true)
+        # kv_secret_name = "existing-vm-secret"   # Optional: Override the generated Key Vault secret name for the auto-generated admin password
         # bypass_platform_safety_checks_on_user_schedule_enabled = false
         # capacity_reservation_group_id                          = ""
         # dedicated_host_id                                      = ""
@@ -61,6 +65,9 @@ windows_vms_clusterV2 = {
             # ip_forwarding_enabled          = false
             # accelerated_networking_enabled = false
             # internal_dns_name_label        = ""
+            # New in windows_virtual_machineV2 v1.1.0: optional name overrides
+            # name                  = "existing-prod-nic1"      # Optional: Override the generated NIC resource name
+            # ip_configuration_name = "existing-prod-ipconfig1" # Optional: Override the generated NIC IP configuration name
           }
         }
 
@@ -77,6 +84,7 @@ windows_vms_clusterV2 = {
           storage_account_type      = "Standard_LRS"
           disk_size_gb              = 512
           write_accelerator_enabled = false
+          # name                    = "existing-prod-osdisk1" # New in windows_virtual_machineV2 v1.1.0: Optional override for the generated OS disk resource name
         }
 
         # Optional: Uncomment and configure data disks for the VM. Can create more than one data disks.
@@ -87,6 +95,7 @@ windows_vms_clusterV2 = {
             disk_size_gb         = 500
             lun                  = 0
             caching              = "ReadWrite"
+            # name                                 = "existing-prod-datadisk1" # New in windows_virtual_machineV2 v1.1.0: Optional override for the generated data disk resource name
             # disk_iops_read_write                 = null
             # disk_mbps_read_write                 = null
             # disk_iops_read_only                  = null
@@ -219,6 +228,7 @@ windows_vms_clusterV2 = {
       frontend_ip_configuration = {
         feipc1 = {
           subnet = "MAZ" # (Required) The name or the resource id of the Subnet which should be used for this IP Configuration
+          # name                                                = "existing-prod-lbfe"       # New in load_balancer v2.0.0: Optional override for the generated frontend IP configuration name
           # private_ip_address                                 = "10.10.10.10" # (Optional) Private IP Address to assign to the Load Balancer. The last one and first four IPs in any range are reserved and cannot be manually assigned.
           private_ip_address_allocation = "Dynamic" # (Optional) The allocation method for the Private IP Address used by this Load Balancer. Possible values as Dynamic and Static.
           # private_ip_address_version                         = "IPv4"        # (Optional) The version of IP that the Private IP Address is. Possible values are IPv4 or IPv6.
@@ -241,6 +251,7 @@ windows_vms_clusterV2 = {
       #
       # azurerm_lb_backend_address_pool section
       #
+      # backend_address_pool_name = "existing-prod-lbbp" # New in load_balancer v2.0.0: Optional override for the generated backend address pool name
       # synchronous_mode = "Automatic" # (Optional) The backend address synchronous mode for the Backend Address Pool. Possible values are Automatic and Manual. This is required with virtual_network_id. Changing this forces a new resource to be created.
       # tunnel_interface = {
       #   ti1 = {
@@ -260,6 +271,7 @@ windows_vms_clusterV2 = {
           protocol        = "Tcp" # (Optional) Specifies the protocol of the end point. Possible values are Http, Https or Tcp. If TCP is specified, a received ACK is required for the probe to be successful. If HTTP is specified, a 200 OK response from the specified URI is required for the probe to be successful. Defaults to Tcp.
           port            = 443   # (Required) Port on which the Probe queries the backend endpoint. Possible values range from 1 to 65535, inclusive.
           probe_threshold = 1     # (Optional) The number of consecutive successful or failed probes that allow or deny traffic to this endpoint. Possible values range from 1 to 100. The default value is 1.
+          # name                = "existing-prod-lbhp-443" # New in load_balancer v2.0.0: Optional override for the generated probe name
           # request_path        = ""    # (Optional) The URI used for requesting health status from the backend endpoint. Required if protocol is set to Http or Https. Otherwise, it is not allowed.
           # interval_in_seconds = 15    # (Optional) The interval, in seconds between probes to the backend endpoint for health status. The default value is 15, the minimum value is 5.
         }
@@ -267,6 +279,7 @@ windows_vms_clusterV2 = {
           protocol        = "Tcp" # (Optional) Specifies the protocol of the end point. Possible values are Http, Https or Tcp. If TCP is specified, a received ACK is required for the probe to be successful. If HTTP is specified, a 200 OK response from the specified URI is required for the probe to be successful. Defaults to Tcp.
           port            = 80    # (Required) Port on which the Probe queries the backend endpoint. Possible values range from 1 to 65535, inclusive.
           probe_threshold = 1     # (Optional) The number of consecutive successful or failed probes that allow or deny traffic to this endpoint. Possible values range from 1 to 100. The default value is 1.
+          # name                = "existing-prod-lbhp-80"  # New in load_balancer v2.0.0: Optional override for the generated probe name
           # request_path        = ""    # (Optional) The URI used for requesting health status from the backend endpoint. Required if protocol is set to Http or Https. Otherwise, it is not allowed.
           # interval_in_seconds = 15    # (Optional) The interval, in seconds between probes to the backend endpoint for health status. The default value is 15, the minimum value is 5.
         }
@@ -283,6 +296,7 @@ windows_vms_clusterV2 = {
           probe_name                     = "tcp443" # (Optional) The name of a Probe defined above
           enable_floating_ip             = true     # (Optional) Are the Floating IPs enabled for this Load Balancer Rule? A "floating” IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
           frontend_ip_configuration_name = "feipc1" # (Requires) The name of the Frontend IP Configuration to associate with the Load Balancer Rule.
+          # name                            = "existing-prod-lbr-443" # New in load_balancer v2.0.0: Optional override for the generated rule name
           # idle_timeout_in_minutes        = 4                  # (Optional) Specifies the idle timeout in minutes for TCP connections. Valid values are between 4 and 100 minutes. Defaults to 4 minutes.
           load_distribution = "SourceIPProtocol" #(Optional) Specifies the load balancing distribution type to be used by the Load Balancer. Possible values are: Default – The load balancer is configured to use a 5 tuple hash to map traffic to available servers. SourceIP – The load balancer is configured to use a 2 tuple hash to map traffic to available servers. SourceIPProtocol – The load balancer is configured to use a 3 tuple hash to map traffic to available servers. Also known as Session Persistence, where in the Azure portal the options are called None, Client IP and Client IP and Protocol respectively. Defaults to Default.
           # disable_outbound_snat          = false              # (Optional) Should outbound SNAT be disabled for this Load Balancer Rule? Defaults to false.
@@ -295,6 +309,7 @@ windows_vms_clusterV2 = {
           probe_name                     = "tcp80"  # (Optional) The name of a Probe defined above
           enable_floating_ip             = true     # (Optional) Are the Floating IPs enabled for this Load Balancer Rule? A "floating” IP is reassigned to a secondary server in case the primary server fails. Required to configure a SQL AlwaysOn Availability Group. Defaults to false.
           frontend_ip_configuration_name = "feipc1" # (Requires) The name of the Frontend IP Configuration to associate with the Load Balancer Rule.
+          # name                            = "existing-prod-lbr-80"  # New in load_balancer v2.0.0: Optional override for the generated rule name
           # idle_timeout_in_minutes        = 4                  # (Optional) Specifies the idle timeout in minutes for TCP connections. Valid values are between 4 and 100 minutes. Defaults to 4 minutes.
           load_distribution = "SourceIPProtocol" #(Optional) Specifies the load balancing distribution type to be used by the Load Balancer. Possible values are: Default – The load balancer is configured to use a 5 tuple hash to map traffic to available servers. SourceIP – The load balancer is configured to use a 2 tuple hash to map traffic to available servers. SourceIPProtocol – The load balancer is configured to use a 3 tuple hash to map traffic to available servers. Also known as Session Persistence, where in the Azure portal the options are called None, Client IP and Client IP and Protocol respectively. Defaults to Default.
           # disable_outbound_snat          = false              # (Optional) Should outbound SNAT be disabled for this Load Balancer Rule? Defaults to false.
