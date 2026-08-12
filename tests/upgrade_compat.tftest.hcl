@@ -44,16 +44,19 @@ run "baseline_apply" {
   # network_interface_ids and availability_set_id from this module's resources
   # through ARM-ID-validated arguments — mock_provider's synthetic apply-time
   # ids aren't ARM-ID shaped, so provide realistic overrides for both.
+  # NOTE: override_during is intentionally omitted — `apply` is already the
+  # default override timing for a `command = apply` run, and the attribute
+  # itself requires Terraform >= 1.11 (added in the 1.11.0 test framework),
+  # which would otherwise force this module's required_version floor higher
+  # than every other consumer/child-module constraint needs.
   override_resource {
-    target          = azurerm_availability_set.availability_set
-    override_during = apply
+    target = azurerm_availability_set.availability_set
     values = {
       id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-project/providers/Microsoft.Compute/availabilitySets/Dev1SWJ-test-as"
     }
   }
   override_resource {
-    target          = module.windows_VMs["test"].azurerm_network_interface.vm-nic["nic1"]
-    override_during = apply
+    target = module.windows_VMs["test"].azurerm_network_interface.vm-nic["nic1"]
     values = {
       id = "/subscriptions/00000000-0000-0000-0000-000000000000/resourceGroups/rg-project/providers/Microsoft.Network/networkInterfaces/Dev1SWJ-test-nic1"
     }
