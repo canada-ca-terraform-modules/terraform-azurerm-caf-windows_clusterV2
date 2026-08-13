@@ -4,6 +4,21 @@ All notable changes to this module are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.0.1] - 2026-08-13
+
+### Fixed
+
+- `windows-vms.tf`: the `windows_VMs` module call never passed this module's own `var.tags` down to the `windows_virtual_machineV2` child module (unlike `availability_set.tf`, which correctly passes `tags = var.tags`) - `var.tags` inside that child was always `{}` by default, regardless of what callers set at the `windows_clusterV2` level. This was previously invisible because `windows_virtual_machineV2` v1.0.1's VM resource had `tags` in its own `lifecycle.ignore_changes`, so Terraform never reconciled the (always-empty) computed value against whatever tags actually existed on the real resource (e.g. tags injected by an Azure Policy tag-inheritance rule). That protection was removed from the VM resource's `ignore_changes` in a later `windows_virtual_machineV2` release (present by v1.2.0, the version this module is pinned to as of `v2.0.0`) - meaning every `windows_clusterV2` caller upgrading to `v2.0.0` would have Terraform actively strip any policy-managed or manually-set tags off their VM on the next apply. Found via a live `terraform-module-upgrade-probe` run comparing a real `1.0.0` deployment against `v2.0.0`. Fixed by adding `tags = var.tags` to the `windows_VMs` module call.
+- Added `tests/child_module_name_overrides.tftest.hcl` assertion (`windows_vm_name_overrides_passthrough` run) confirming a non-empty top-level `tags` value now reaches `windows_vm_object.tags` on the child module's VM resource.
+- **Critical**: the `load_balancer` child module's own naming formula (env/userDefinedString/postfix-based, `v2.0.0`) never matched this module's pre-refactor inline-resource naming (env/serverType/userDefinedString-based, used before the load balancer was wrapped in a child module) - without a fix, upgrading ANY existing `1.0.0`-era deployment with a load balancer straight to `v2.0.0` would destroy and recreate the entire load balancer (`azurerm_lb`, `azurerm_lb_backend_address_pool`, every `azurerm_lb_probe`/`azurerm_lb_rule`) and force-replace the NIC-to-backend-pool association, confirmed via a live `terraform-module-upgrade-probe` run (`Plan: 5 to add, 5 to destroy` before this fix). Fixed two ways:
+  - Added `moved.tf`: `moved` blocks remapping each old inline resource address (`azurerm_lb.loadbalancer`, `azurerm_lb_backend_address_pool.loadbalancer-lbbp`, `azurerm_lb_probe.loadbalancer-lbhp`, `azurerm_lb_rule.loadbalancer-lbr`) to its new location inside `module.load_balancer`.
+  - `loadbalancer.tf`/`name.tf`: revived the pre-refactor `lb-name`/`lb_name_prefix` naming locals and now default `load_balancer`'s `custom_name`, `backend_address_pool_name`, and every `frontend_ip_configuration`/`probes`/`rules` entry's `name` to the exact pre-refactor formula, unless the caller has already set their own override (Pattern 10: explicit override > legacy formula). Live-probe-verified end state: `Plan: 0 to add, 0 to destroy` - only benign in-place attribute updates remain (unrelated to this fix).
+  - Added `tests/load_balancer_naming_compat.tftest.hcl` (2 runs) asserting both the legacy-formula default and the explicit-override path for all four resource names.
+
+### Notes
+
+- No new arguments, no naming or provider-version changes - patch release. Existing `ESLZ/SRV-windows-cluster.tfvars` requires no changes.
+
 ## [2.0.0] - 2026-08-12
 
 ### Changed
