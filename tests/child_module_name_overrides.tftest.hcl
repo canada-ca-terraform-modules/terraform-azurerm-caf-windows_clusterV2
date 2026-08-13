@@ -45,6 +45,9 @@ variables {
 run "windows_vm_name_overrides_passthrough" {
   command = plan
   variables {
+    tags = {
+      classification = "pbmm"
+    }
     windows_vms_cluster = {
       resource_group = "Project"
       windows_VMs = {
@@ -85,6 +88,10 @@ run "windows_vm_name_overrides_passthrough" {
   assert {
     condition     = module.windows_VMs["test"].windows_vm_object.name == "existing-prod-vm"
     error_message = "vm_name override must pass through to the windows_VMs child module's VM resource"
+  }
+  assert {
+    condition     = module.windows_VMs["test"].windows_vm_object.tags["classification"] == "pbmm"
+    error_message = "windows-vms.tf must forward this module's own var.tags to the windows_VMs child module - a prior omission meant caller-supplied tags never reached the VM/NIC at all"
   }
 }
 

@@ -4,6 +4,17 @@ All notable changes to this module are documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 
+## [2.0.1] - 2026-08-13
+
+### Fixed
+
+- `windows-vms.tf`: the `windows_VMs` module call never passed this module's own `var.tags` down to the `windows_virtual_machineV2` child module (unlike `availability_set.tf`, which correctly passes `tags = var.tags`) - `var.tags` inside that child was always `{}` by default, regardless of what callers set at the `windows_clusterV2` level. This was previously invisible because `windows_virtual_machineV2` v1.0.1's VM resource had `tags` in its own `lifecycle.ignore_changes`, so Terraform never reconciled the (always-empty) computed value against whatever tags actually existed on the real resource (e.g. tags injected by an Azure Policy tag-inheritance rule). That protection was removed from the VM resource's `ignore_changes` in a later `windows_virtual_machineV2` release (present by v1.2.0, the version this module is pinned to as of `v2.0.0`) - meaning every `windows_clusterV2` caller upgrading to `v2.0.0` would have Terraform actively strip any policy-managed or manually-set tags off their VM on the next apply. Found via a live `terraform-module-upgrade-probe` run comparing a real `1.0.0` deployment against `v2.0.0`. Fixed by adding `tags = var.tags` to the `windows_VMs` module call.
+- Added `tests/child_module_name_overrides.tftest.hcl` assertion (`windows_vm_name_overrides_passthrough` run) confirming a non-empty top-level `tags` value now reaches `windows_vm_object.tags` on the child module's VM resource.
+
+### Notes
+
+- No new arguments, no naming or provider-version changes - patch release. Existing `ESLZ/SRV-windows-cluster.tfvars` requires no changes.
+
 ## [2.0.0] - 2026-08-12
 
 ### Changed

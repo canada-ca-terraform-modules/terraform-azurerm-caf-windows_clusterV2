@@ -11,6 +11,7 @@ module "windows_VMs" {
 
   resource_groups = var.resource_groups
   subnets         = var.subnets
+  tags            = var.tags
   user_data       = try(each.value.user_data, false) != false ? base64encode(file("${path.cwd}/${each.value.user_data}")) : null
   depends_on      = [azurerm_availability_set.availability_set]
 }
