@@ -29,6 +29,8 @@ provider "azurerm" {
 module "windows_VMs_clusterV2" {
   # PR code and baseline code are two on-disk checkouts of this same repo,
   # not two resolved git refs - no pinned ?ref, no version toggle here.
+  # (no-op touch: triggers the live-test workflow's pull_request path filter
+  # for this PR, since it otherwise only touches .github/workflows/**)
   source = "../../"
 
   location            = var.location
